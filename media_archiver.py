@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 import requests
 
-import google_drive
+import media_storage
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -73,9 +73,12 @@ def _download(media_url: str) -> tuple[bytes, str]:
 def archive_posts_media(posts: list[dict], *, search_term: str, id_query=None, logger=None) -> list[dict]:
     if not _env_bool("THREADS_DOWNLOAD_MEDIA", False):
         return posts
-    if not google_drive.is_configured():
+    from config import IS_DEV
+    import google_drive
+
+    if not IS_DEV and not google_drive.is_configured():
         if logger:
-            logger.warning("Google Drive nao configurado para arquivamento Threads")
+            logger.warning("Google Drive nao configurado e APP_ENV != development. Arquivamento desativado.")
         return posts
 
     for post in posts:
@@ -93,11 +96,8 @@ def archive_posts_media(posts: list[dict], *, search_term: str, id_query=None, l
                 f"post_{_safe_slug(str(post_id), 'sem-id')}",
                 media_type,
             ]
-            file_id, drive_url = google_drive.upload_bytes(
-                data,
-                filename,
-                mimetype,
-                folder_path=folder_path,
+            file_id, drive_url = media_storage.save_media(
+                data, filename, mimetype, folder_path, logger=logger
             )
             post["drive_file_id"] = file_id
             post["drive_url"] = drive_url

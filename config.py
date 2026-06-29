@@ -67,6 +67,15 @@ def _env_int(key: str, default: int) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Ambiente de execucao
+# ---------------------------------------------------------------------------
+
+APP_ENV = os.getenv("APP_ENV", "development").strip().lower()
+IS_DEV = APP_ENV == "development"
+MEDIA_LOCAL_PATH = os.getenv("MEDIA_LOCAL_PATH", "./media").strip()
+
+
+# ---------------------------------------------------------------------------
 # User Agents
 # ---------------------------------------------------------------------------
 

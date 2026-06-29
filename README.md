@@ -1,5 +1,18 @@
 # GuaIA-threads-collector
 
+## Configuracao
+
+Copie `.env.example` para `.env` e ajuste as variaveis conforme o ambiente.
+
+### Variaveis de ambiente
+
+- `APP_ENV`: use `development` para salvar midias localmente; use `production` para manter o envio ao Google Drive. Qualquer valor diferente de `development` usa Google Drive.
+- `MEDIA_LOCAL_PATH`: caminho base onde imagens e videos sao salvos em desenvolvimento. O padrao e `./media`.
+- `THREADS_DOWNLOAD_MEDIA`: quando `true`, baixa e arquiva as midias encontradas nos posts.
+- `GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON` e `GOOGLE_DRIVE_FOLDER_ID`: necessarias apenas fora de `development`, quando o arquivamento usa Google Drive.
+
+Em `development`, o Google Drive nao e necessario para salvar midias; os arquivos sao gravados em `MEDIA_LOCAL_PATH` com a mesma estrutura de pastas usada no arquivamento.
+
 
 
 ## Getting started
