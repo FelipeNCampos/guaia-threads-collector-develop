@@ -1,0 +1,61 @@
+# =============================================================
+#  Docker – arquivos excluídos do build context
+#  (reduz tamanho da imagem e evita vazar segredos)
+# =============================================================
+
+# ── Controle de versão ────────────────────────────────────────
+.git/
+.gitignore
+
+# ── Variáveis de ambiente ─────────────────────────────────────
+# Nunca copiar o .env real para dentro da imagem;
+# os valores chegam via docker-compose environment:
+.env
+.env.*
+!.env.example
+
+# ── Dados gerados em runtime ──────────────────────────────────
+data/
+downloads/
+postgres_data/
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Ambientes virtuais Python ─────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Cache Python ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── IDEs e editores ───────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Playwright (cache local, não necessário na imagem) ────────
+.playwright/
+playwright-report/
+test-results/
+
+# ── Documentação ──────────────────────────────────────────────
+README.md
+docs/
+
+# ── Scripts de CI/CD que não vão para o container ─────────────
+.github/
+.gitlab-ci.yml

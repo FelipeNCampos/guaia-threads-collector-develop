@@ -1,0 +1,75 @@
+# =============================================================
+#  Git – arquivos ignorados
+# =============================================================
+
+# ── Ambiente Python ───────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+.env.local
+.env.*.local
+
+# Distribuição / build
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# ── Variáveis de ambiente ─────────────────────────────────────
+# O .env real NUNCA vai para o repositório
+.env.dev
+
+# ── Dados de sessão e cookies ─────────────────────────────────
+data/
+downloads/
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Docker ────────────────────────────────────────────────────
+# Volumes locais gerados pelo compose
+postgres_data/
+
+# ── IDEs e editores ───────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Playwright ────────────────────────────────────────────────
+# Cache de browsers baixados localmente (fora do container)
+.playwright/
+playwright-report/
+test-results/
+
+# ── Testes ────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── Misc ──────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.orig
+.cache/
+
+user-thor.sh
+config.yml
+./config.yml

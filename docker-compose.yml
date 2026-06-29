@@ -1,0 +1,74 @@
+services:
+
+  # ── Banco de dados ────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: threads_db_${SUFFIX}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:       ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT_EXTERNAL}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - threads_net
+
+  # ── Feeder GuaIA ──────────────────────────────────────────────────────────
+  feeder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: threads_feeder_${SUFFIX}
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST:        db
+      POSTGRES_PORT:        ${POSTGRES_PORT}
+      POSTGRES_USER:        ${POSTGRES_USER}
+      POSTGRES_PASSWORD:    ${POSTGRES_PASSWORD}
+      POSTGRES_DB:          ${POSTGRES_DB}
+      THREADS_QUERY_SOURCE: ${THREADS_QUERY_SOURCE}
+      HEADLESS:             ${HEADLESS}
+      THREADS_USERNAME:     ${THREADS_USERNAME:-}
+      THREADS_PASSWORD:     ${THREADS_PASSWORD:-}
+      THREADS_FETCH_COMMENTS: ${THREADS_FETCH_COMMENTS:-false}
+      FETCH_COMMENTS:       ${FETCH_COMMENTS:-false}
+      COMMENTS_PER_POST:    ${COMMENTS_PER_POST:-50}
+      COMMENTS_CONCURRENCY: ${COMMENTS_CONCURRENCY:-3}
+      THREADS_DOWNLOAD_MEDIA: ${THREADS_DOWNLOAD_MEDIA:-false}
+      THREADS_MEDIA_DOWNLOAD_TIMEOUT_SECONDS: ${THREADS_MEDIA_DOWNLOAD_TIMEOUT_SECONDS:-60}
+      THREADS_MEDIA_MAX_BYTES: ${THREADS_MEDIA_MAX_BYTES:-262144000}
+      GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON: ${GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON:-}
+      GOOGLE_DRIVE_FOLDER_ID: ${GOOGLE_DRIVE_FOLDER_ID:-}
+      SUFFIX:               ${SUFFIX:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+      - ./config.yml:/app/config.yml:ro
+    shm_size: "2gb"
+    security_opt:
+      - seccomp:unconfined
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - threads_net
+    command: ["python", "threads_api_feeder.py"]
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  threads_net:
+    driver: bridge
